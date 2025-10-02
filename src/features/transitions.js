@@ -2,34 +2,23 @@ import barba from '@barba/core'
 import gsap from 'gsap'
 
 function transition() {
-  console.log(barba)
-  console.log(gsap)
-
-  gsap.to('.loader-bar', {
-    yPercent: 100,
-    stagger: 0.05,
-    duration: 1,
-  })
+  console.log(barba && gsap ? 'Barba & GSAP Loaded' : 'Loading Error')
 
   barba.init({
     transitions: [
       {
         name: 'opacity-transition',
         leave(data) {
-          console.log('leaving', data)
-          return gsap.to('.loader-bar', {
-            yPercent: 0,
-            stagger: 0.05,
-            duration: 1,
+          console.log('Leaving')
+          return gsap.to(data.current.container, {
+            opacity: 0,
           })
         },
         enter(data) {
-          console.log('entering')
+          console.log('Entering')
           data.current.container.remove()
-          return gsap.to('.loader-bar', {
-            yPercent: 100,
-            stagger: 0.05,
-            duration: 1,
+          return gsap.from(data.next.container, {
+            opacity: 0,
           })
         },
       },
