@@ -1,4 +1,9 @@
+import pageAbout from './pages/pageAbout'
+import pageContact from './pages/pageContact'
 import pageGlobal from './pages/pageGlobal'
+import pageHome from './pages/pageHome'
+import pageProjectTemplate from './pages/pageProjectTemplate'
+import pageStills from './pages/pageStills'
 import './styles/style.css'
 
 // Global
@@ -6,13 +11,13 @@ pageGlobal()
 
 // Page specific
 if (window.location.pathname === '/') {
-  console.log('home page script loaded')
+  pageHome()
 } else if (window.location.pathname === '/stills') {
-  console.log('stills page script loaded')
+  pageStills()
 } else if (window.location.pathname === '/about') {
-  console.log('about page script loaded')
+  pageAbout()
 } else if (window.location.pathname === '/contact') {
-  console.log('contact page script loaded')
+  pageContact()
 } else if (window.location.pathname.startsWith('/work/')) {
-  console.log('project page script loaded')
+  pageProjectTemplate()
 }

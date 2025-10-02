@@ -1,7 +1,7 @@
 import transitions from '../features/transitions'
 
 const pageGlobal = () => {
-  console.log('page global loaded')
+  console.log('Page global loaded')
   transitions()
 }
 
