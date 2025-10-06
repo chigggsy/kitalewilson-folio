@@ -34,16 +34,16 @@ const projectNav = () => {
   }
 
   const translateProjectPreview = () => {
-    const mapperMovement = gsap.utils.mapRange(0, window.innerWidth, 15, -15)
-    const mapperRotation = gsap.utils.mapRange(0, window.innerWidth, -2, 2)
+    const mapperMovement = gsap.utils.mapRange(0, window.innerWidth, -10, 10)
+    // const mapperRotation = gsap.utils.mapRange(0, window.innerWidth, -2, 2)
 
     document.addEventListener('mousemove', (e) => {
       const mouseX = e.clientX
       const translateionAmount = mapperMovement(mouseX)
-      const rotationAmount = mapperRotation(mouseX)
+      // const rotationAmount = mapperRotation(mouseX)
       gsap.to('.project-preview-wrapper', {
         translateX: translateionAmount,
-        rotateY: rotationAmount,
+        // rotateY: rotationAmount,
         duration: 0.5,
       })
     })
