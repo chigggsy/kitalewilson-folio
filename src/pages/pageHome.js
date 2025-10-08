@@ -62,10 +62,10 @@ const pageHome = () => {
         onComplete: () => {
           gsap.set('.preloader', { display: 'none' })
           st_bio.revert()
+          projectNav()
         },
       })
       tl_home
-        .set('.project-preview', { opacity: 0 }, 0)
         .set(
           '.preview-border.is-left',
           {
@@ -133,13 +133,17 @@ const pageHome = () => {
           { duration: 0.3, opacity: 0, stagger: { each: 0.01 } },
           3.5
         )
+        .from(
+          '.project-preview',
+          { duration: 1, opacity: 0, ease: 'power4.inOut' },
+          2.75
+        )
 
       // GS Dev Tools
       // GSDevTools.create({ css: 'z-index: 9999' })
     })
   }
 
-  projectNav()
   animation()
 }
 
