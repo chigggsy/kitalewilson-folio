@@ -45,10 +45,27 @@ const pageHome = () => {
           },
           1.5
         )
+        .to(
+          st_header.words,
+          {
+            duration: 0.4,
+            opacity: 0,
+            stagger: { each: 0.15 },
+            ease: 'circ.inOut',
+          },
+          2.7
+        )
 
       // Home Page Timeline
-      const tl_home = gsap.timeline({ id: 'Home' })
+      const tl_home = gsap.timeline({
+        id: 'Home',
+        onComplete: () => {
+          gsap.set('.preloader', { display: 'none' })
+          st_bio.revert()
+        },
+      })
       tl_home
+        .set('.project-preview', { opacity: 0 }, 0)
         .set(
           '.preview-border.is-left',
           {
@@ -56,27 +73,30 @@ const pageHome = () => {
           },
           0
         )
+        .set('.preloader-fill', { display: 'none' }, 1)
         .from(
+          // Preview Border
           '.preview-border.is-left, .preview-border.is-right',
           {
             duration: 2,
             height: 0,
             y: '50vh',
-            stagger: { each: 0.2 },
+            stagger: { each: 0.3 },
             ease: 'circ.inOut',
           },
-          3
+          1.5
         )
         .from(
+          // Preview Border
           '.preview-border.is-bottom, .preview-border.is-top',
           {
             duration: 2,
             width: 0,
             x: '-50vw',
-            stagger: { each: 0.2 },
+            stagger: { each: 0.3 },
             ease: 'circ.inOut',
           },
-          3.3
+          2
         )
         .from(
           st_bio.words,
@@ -86,11 +106,36 @@ const pageHome = () => {
             stagger: { each: 0.01 },
             ease: 'power3.out',
           },
+          3
+        )
+        .from(
+          '.project-name-wrapper h2',
+          {
+            duration: 1.5,
+            y: '120%',
+            stagger: { each: 0.04, from: 'start' },
+            ease: 'power4.inOut',
+          },
+          2.6
+        )
+        .from(
+          '.logo div img',
+          {
+            duration: 2,
+            y: '130%',
+            stagger: { each: 0.05, from: 'end' },
+            ease: 'power4.inOut',
+          },
+          2.5
+        )
+        .from(
+          '.nav-item-list a',
+          { duration: 0.3, opacity: 0, stagger: { each: 0.01 } },
           3.5
         )
 
       // GS Dev Tools
-      GSDevTools.create({ css: 'z-index: 9999' })
+      // GSDevTools.create({ css: 'z-index: 9999' })
     })
   }
 
