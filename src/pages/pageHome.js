@@ -134,9 +134,13 @@ const pageHome = () => {
           3.5
         )
         .from(
-          '.project-preview',
-          { duration: 1, opacity: 0, ease: 'power4.inOut' },
-          2.75
+          '.preview-video',
+          {
+            duration: 1.2,
+            clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+            ease: 'circ.inOut',
+          },
+          3.5
         )
 
       // GS Dev Tools
