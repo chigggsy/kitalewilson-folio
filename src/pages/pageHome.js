@@ -2,26 +2,44 @@ import gsap from 'gsap'
 import { GSDevTools } from 'gsap/GSDevTools'
 import { SplitText } from 'gsap/SplitText'
 
-import projectNav from '../features/projectNav'
-
 gsap.registerPlugin(SplitText)
 gsap.registerPlugin(GSDevTools)
 
 const pageHome = () => {
-  const animation = () => {
-    document.fonts.ready.then(() => {
+  const mm = gsap.matchMedia()
+
+  mm.add(
+    {
+      isDesktop: '(min-width: 992px)',
+      isTablet: '(max-width: 991px)',
+    },
+    (context) => {
+      let { isDesktop } = context.conditions
+
       // Splitting Text
-      const st_header = SplitText.create('.preloader-text-wrapper p', {
+      const st_loaderText = SplitText.create('.preloader-text-wrapper p', {
         type: 'words',
       })
       const st_bio = SplitText.create('.bio', { type: 'words', mask: 'words' })
 
-      // Preloader Timeline
-      const tl_preloader = gsap.timeline({ id: 'Preloader' })
-      tl_preloader
+      // Timeline
+      const tl = gsap.timeline({
+        id: 'Preloader',
+        onComplete: () => {
+          gsap.set('.preloader', { display: 'none' })
+          st_bio.revert()
+        },
+      })
+      tl.set(
+        '.preview-border.is-left',
+        {
+          transformOrigin: 'center 100%',
+        },
+        0
+      )
         .to(
           // Initial text reveal
-          st_header.words,
+          st_loaderText.words,
           {
             duration: 2,
             y: '-100%',
@@ -46,7 +64,7 @@ const pageHome = () => {
           1.5
         )
         .to(
-          st_header.words,
+          st_loaderText.words,
           {
             duration: 0.4,
             opacity: 0,
@@ -54,24 +72,6 @@ const pageHome = () => {
             ease: 'circ.inOut',
           },
           2.7
-        )
-
-      // Home Page Timeline
-      const tl_home = gsap.timeline({
-        id: 'Home',
-        onComplete: () => {
-          gsap.set('.preloader', { display: 'none' })
-          st_bio.revert()
-          projectNav()
-        },
-      })
-      tl_home
-        .set(
-          '.preview-border.is-left',
-          {
-            transformOrigin: 'center 100%',
-          },
-          0
         )
         .set('.preloader-fill', { display: 'none' }, 1)
         .from(
@@ -106,9 +106,10 @@ const pageHome = () => {
             stagger: { each: 0.01 },
             ease: 'power3.out',
           },
-          3
+          isDesktop ? 3 : 3
         )
-        .from(
+      if (isDesktop) {
+        tl.from(
           '.project-name-wrapper h2',
           {
             duration: 1.5,
@@ -118,16 +119,18 @@ const pageHome = () => {
           },
           2.6
         )
-        .from(
-          '.logo div img',
-          {
-            duration: 2,
-            y: '130%',
-            stagger: { each: 0.05, from: 'end' },
-            ease: 'power4.inOut',
-          },
-          2.5
-        )
+      }
+
+      tl.from(
+        '.logo div img',
+        {
+          duration: 2,
+          y: '130%',
+          stagger: { each: 0.05, from: 'end' },
+          ease: 'power4.inOut',
+        },
+        2.5
+      )
         .from(
           '.nav-item-list a',
           { duration: 0.3, opacity: 0, stagger: { each: 0.01 } },
@@ -142,13 +145,10 @@ const pageHome = () => {
           },
           3.5
         )
+    }
+  )
 
-      // GS Dev Tools
-      // GSDevTools.create({ css: 'z-index: 9999' })
-    })
-  }
-
-  animation()
+  // GSDevTools.create({ css: 'z-index: 9999' })
 }
 
 export default pageHome
