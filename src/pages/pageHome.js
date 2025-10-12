@@ -14,7 +14,7 @@ const pageHome = () => {
       isTablet: '(max-width: 991px)',
     },
     (context) => {
-      let { isDesktop } = context.conditions
+      let { isDesktop, isTablet } = context.conditions
 
       // Splitting Text
       const st_loaderText = SplitText.create('.preloader-text-wrapper p', {
@@ -116,6 +116,19 @@ const pageHome = () => {
             y: '120%',
             stagger: { each: 0.04, from: 'start' },
             ease: 'power4.inOut',
+          },
+          2.6
+        )
+      }
+      if (isTablet) {
+        tl.from(
+          '.project',
+          {
+            duration: 1,
+            opacity: 0,
+            y: 20,
+            stagger: { each: 0.04, from: 'end' },
+            ease: 'power3.inOut',
           },
           2.6
         )
