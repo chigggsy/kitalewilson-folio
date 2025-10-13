@@ -32,6 +32,10 @@ const pageHome = () => {
         onComplete: () => {
           gsap.set('.preloader', { display: 'none' })
           st_bio.revert()
+
+          if (isDesktop) {
+            cleanupProjectNav = projectNav(context)
+          }
         },
       })
       tl.set(
@@ -162,9 +166,6 @@ const pageHome = () => {
           },
           3.5
         )
-      if (isDesktop) {
-        cleanupProjectNav = projectNav()
-      }
 
       return () => {
         if (cleanupProjectNav) {
