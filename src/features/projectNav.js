@@ -3,54 +3,74 @@ import gsap from 'gsap'
 const projectNav = () => {
   const navHover = () => {
     const projectList = document.querySelectorAll('.project')
+    const cleanups = []
 
     projectList.forEach((project) => {
       const projectName = project.querySelector('h2')
       const projectNameItalic = project.querySelector('.project-name-italic')
       const projectPropertyList = project.querySelectorAll('.project-property')
 
-      project.addEventListener('mouseenter', () => {
-        const TLmouseEnter = gsap.timeline({
+      const handleMouseEnter = () => {
+        const tl = gsap.timeline({
           defaults: { duration: 0.6, ease: 'power3.out' },
         })
-        TLmouseEnter.to(projectName, { y: -22 }, 0)
+        tl.to(projectName, { y: -22 }, 0)
           .to(projectNameItalic, { y: -22 }, 0)
           .to(projectPropertyList, { top: 0, stagger: { amount: 0.15 } }, 0)
-      })
+      }
 
-      project.addEventListener('mouseleave', () => {
-        const TLmouseLeave = gsap.timeline({
+      const handleMouseLeave = () => {
+        const tl = gsap.timeline({
           defaults: { duration: 0.6, ease: 'power3.inOut' },
         })
-        TLmouseLeave.to(projectName, { y: 0 }, 0.15)
+        tl.to(projectName, { y: 0 }, 0.15)
           .to(projectNameItalic, { y: 0 }, 0.15)
           .to(
             projectPropertyList,
             { top: -18, stagger: { amount: 0.15, from: 'end' } },
             0
           )
+      }
+
+      project.addEventListener('mouseenter', handleMouseEnter)
+      project.addEventListener('mouseleave', handleMouseLeave)
+
+      cleanups.push(() => {
+        project.removeEventListener('mouseenter', handleMouseEnter)
+        project.removeEventListener('mouseleave', handleMouseLeave)
       })
     })
+    return () => {
+      cleanups.forEach((cleanup) => cleanup())
+    }
   }
 
   const translateProjectPreview = () => {
     const mapperMovement = gsap.utils.mapRange(0, window.innerWidth, -10, 10)
-    // const mapperRotation = gsap.utils.mapRange(0, window.innerWidth, -2, 2)
 
-    document.addEventListener('mousemove', (e) => {
+    const handleMouseMove = (e) => {
       const mouseX = e.clientX
       const translateionAmount = mapperMovement(mouseX)
-      // const rotationAmount = mapperRotation(mouseX)
       gsap.to('.project-preview-wrapper', {
         translateX: translateionAmount,
-        // rotateY: rotationAmount,
         duration: 0.5,
       })
-    })
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+    }
   }
 
-  navHover()
-  translateProjectPreview()
+  const cleanupNavHover = navHover()
+  const cleanupTranslate = translateProjectPreview()
+
+  return () => {
+    cleanupNavHover()
+    cleanupTranslate()
+  }
 }
 
 export default projectNav

@@ -2,6 +2,8 @@ import gsap from 'gsap'
 import { GSDevTools } from 'gsap/GSDevTools'
 import { SplitText } from 'gsap/SplitText'
 
+import projectNav from '../features/projectNav'
+
 gsap.registerPlugin(SplitText)
 gsap.registerPlugin(GSDevTools)
 
@@ -15,6 +17,8 @@ const pageHome = () => {
     },
     (context) => {
       let { isDesktop, isTablet } = context.conditions
+
+      let cleanupProjectNav = null
 
       // Splitting Text
       const st_loaderText = SplitText.create('.preloader-text-wrapper p', {
@@ -158,6 +162,15 @@ const pageHome = () => {
           },
           3.5
         )
+      if (isDesktop) {
+        cleanupProjectNav = projectNav()
+      }
+
+      return () => {
+        if (cleanupProjectNav) {
+          cleanupProjectNav()
+        }
+      }
     }
   )
 
