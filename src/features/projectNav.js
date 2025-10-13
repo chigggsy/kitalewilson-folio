@@ -28,12 +28,12 @@ const projectNav = (context) => {
       const tl = gsap.timeline({
         defaults: { duration: 0.6, ease: 'power3.inOut' },
       })
-      tl.to(projectName, { y: 0 }, 0.15)
-        .to(projectNameItalic, { y: 0 }, 0.15)
+      tl.to(projectName, { y: 0 }, 0.52)
+        .to(projectNameItalic, { y: 0 }, 0.52)
         .to(
           projectPropertyList,
           { top: -18, stagger: { amount: 0.15, from: 'end' } },
-          0
+          0.35
         )
     })
 
