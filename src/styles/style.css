@@ -2,6 +2,8 @@
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-.stills-annotation {
-  opacity: 0;
+@media screen and (max-width: 991px) {
+  .stills-annoation-wrapper {
+    display: flex;
+  }
 }
