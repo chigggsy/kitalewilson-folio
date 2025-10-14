@@ -174,8 +174,6 @@ const pageHome = () => {
       }
     }
   )
-
-  // GSDevTools.create({ css: 'z-index: 9999' })
 }
 
 export default pageHome
