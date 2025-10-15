@@ -32,9 +32,8 @@ const pageStills = () => {
         imageListCropped,
         {
           duration: 1.5,
-          y: isDesktop ? -16 : 0,
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-          stagger: { each: 0.08, from: 'start' },
+          clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+          stagger: { each: 0.02, from: 'end' },
           ease: 'power3.inOut',
         },
         0
