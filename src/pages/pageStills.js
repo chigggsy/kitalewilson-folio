@@ -31,9 +31,10 @@ const pageStills = () => {
       tl.from(
         imageListCropped,
         {
-          duration: 1.5,
-          clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
-          stagger: { each: 0.02, from: 'end' },
+          duration: 1.8,
+          // clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+          opacity: 0,
+          stagger: { each: 0.06, from: 'end' },
           ease: 'power3.inOut',
         },
         0

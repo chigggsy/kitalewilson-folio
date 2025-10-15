@@ -53,13 +53,13 @@ const pageAbout = () => {
       tl.from(
         '.about-image img',
         {
-          duration: 1.5,
-          clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+          duration: 1.8,
+          // clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
           y: 0,
-          opacity: 1,
+          opacity: 0,
           ease: 'power3.inOut',
         },
-        0
+        0.1
       )
         .from(
           st_headings.words,
