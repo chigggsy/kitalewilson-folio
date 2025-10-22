@@ -15,6 +15,8 @@ const pageContact = () => {
       let { isDesktop } = context.conditions
       console.log(isDesktop)
 
+      let dateTimeInterval = null
+
       const st_paragraphs = SplitText.create('.contact-info p', {
         type: 'lines',
         mask: 'lines',
@@ -39,6 +41,7 @@ const pageContact = () => {
         {
           onComplete: () => {
             updateBristolDateTime()
+            dateTimeInterval = setInterval(updateBristolDateTime, 60000)
           },
         },
         0
@@ -70,6 +73,12 @@ const pageContact = () => {
           },
           0.7
         )
+
+      return () => {
+        if (dateTimeInterval) {
+          clearInterval(dateTimeInterval)
+        }
+      }
     }
   )
 }

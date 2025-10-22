@@ -38,8 +38,13 @@ function updateBristolDateTime() {
   const formattedTime = time.toUpperCase()
 
   // Update the DOM elements
-  document.getElementById('date').textContent = formattedDate
-  document.getElementById('time').textContent = formattedTime
+  const dateElement = document.getElementById('date')
+  const timeElement = document.getElementById('time')
+
+  if (dateElement && timeElement) {
+    dateElement.textContent = formattedDate
+    timeElement.textContent = formattedTime
+  }
 }
 
 function getOrdinalSuffix(day) {
@@ -55,8 +60,5 @@ function getOrdinalSuffix(day) {
       return 'th'
   }
 }
-
-updateBristolDateTime()
-setInterval(updateBristolDateTime, 60000)
 
 export default updateBristolDateTime
