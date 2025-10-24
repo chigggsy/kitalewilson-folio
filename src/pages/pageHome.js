@@ -1,11 +1,9 @@
 import gsap from 'gsap'
-import { GSDevTools } from 'gsap/GSDevTools'
 import { SplitText } from 'gsap/SplitText'
 
 import projectNav from '../features/projectNav'
 
 gsap.registerPlugin(SplitText)
-gsap.registerPlugin(GSDevTools)
 
 const pageHome = () => {
   const mm = gsap.matchMedia()

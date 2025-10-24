@@ -5,6 +5,9 @@ import updateBristolDateTime from '../features/updateBristolDateTime'
 
 const pageContact = () => {
   const mm = gsap.matchMedia()
+  let dateTimeInterval = null
+  updateBristolDateTime()
+  dateTimeInterval = setInterval(updateBristolDateTime, 60000)
 
   mm.add(
     {
@@ -14,8 +17,6 @@ const pageContact = () => {
     (context) => {
       let { isDesktop } = context.conditions
       console.log(isDesktop)
-
-      let dateTimeInterval = null
 
       const st_paragraphs = SplitText.create('.contact-info p', {
         type: 'lines',
@@ -36,16 +37,7 @@ const pageContact = () => {
           ease: 'circ.inOut',
         },
       })
-      tl.from(
-        st_paragraphs.lines,
-        {
-          onComplete: () => {
-            updateBristolDateTime()
-            dateTimeInterval = setInterval(updateBristolDateTime, 60000)
-          },
-        },
-        0
-      )
+      tl.from(st_paragraphs.lines, {}, 0)
         .from(
           st_labels.lines,
           {

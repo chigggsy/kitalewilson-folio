@@ -12,7 +12,6 @@ pageGlobal()
 // Page specific
 if (window.location.pathname === '/') {
   pageHome()
-  console.log('testing')
 } else if (window.location.pathname === '/stills') {
   pageStills()
 } else if (window.location.pathname === '/about') {
