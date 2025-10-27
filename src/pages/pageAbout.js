@@ -13,7 +13,7 @@ const pageAbout = () => {
       if (isDesktop) {
         gsap.set('.page-wrapper', { height: '100vh' })
       } else if (isTablet) {
-        gsap.set('.page-wrapper', { clearProps: 'height' })
+        gsap.set('.page-wrapper', { clearProps: 'all' })
       }
       const st_headings = SplitText.create('.about-block h2', {
         type: 'words',

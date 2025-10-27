@@ -1,5 +1,5 @@
 import barba from '@barba/core'
-// import gsap from 'gsap'
+import gsap from 'gsap'
 
 import pageAbout from '../pages/pageAbout'
 import pageContact from '../pages/pageContact'
@@ -10,20 +10,30 @@ import pageStills from '../pages/pageStills'
 function barbaHandler() {
   barba.init({
     transitions: [
-      // {
-      //   name: 'opacity-transition',
-      //   leave(data) {
-      //     return gsap.to(data.current.container, {
-      //       opacity: 0,
-      //     })
-      //   },
-      //   enter(data) {
-      //     data.current.container.remove()
-      //     return gsap.from(data.next.container, {
-      //       opacity: 0,
-      //     })
-      //   },
-      // },
+      {
+        name: 'fade-transition',
+        leave(data) {
+          const tl = gsap.timeline()
+
+          tl.to(data.current.container, {
+            duration: 0.5,
+            opacity: 0,
+          })
+
+          return tl
+        },
+        enter(data) {
+          data.current.container.remove()
+          const tl = gsap.timeline()
+
+          tl.from(data.next.container, {
+            duration: 0,
+            opacity: 0,
+          })
+
+          return tl
+        },
+      },
     ],
     views: [
       {
@@ -36,7 +46,6 @@ function barbaHandler() {
         namespace: 'about',
         beforeEnter() {
           pageAbout()
-          document.querySelector('.page-wrapper').style.height = '100vh'
         },
       },
       {

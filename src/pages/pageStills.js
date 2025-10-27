@@ -13,7 +13,6 @@ const pageStills = () => {
       let { isDesktop } = context.conditions
       gsap.set('.page-wrapper', { clearProps: 'all' })
 
-      const tl = gsap.timeline()
       const imageWrapperList = document.querySelectorAll(
         '.stills-image-wrapper'
       )
@@ -27,6 +26,7 @@ const pageStills = () => {
       })
 
       gsap.set(st_annotations.words, { opacity: 0 })
+      const tl = gsap.timeline()
 
       // Intro timeline
       tl.from(
