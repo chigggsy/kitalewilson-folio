@@ -11,6 +11,7 @@ const pageStills = () => {
     },
     (context) => {
       let { isDesktop } = context.conditions
+      gsap.set('.page-wrapper', { clearProps: 'all' })
 
       const tl = gsap.timeline()
       const imageWrapperList = document.querySelectorAll(

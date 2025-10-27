@@ -1,13 +1,13 @@
-import pageAbout from './pages/pageAbout'
-import pageContact from './pages/pageContact'
-import pageGlobal from './pages/pageGlobal'
-import pageHome from './pages/pageHome'
-import pageProjectTemplate from './pages/pageProjectTemplate'
-import pageStills from './pages/pageStills'
+import barbaHandler from './features/barbaHandler'
+
 import './styles/style.css'
 
 // Global
-pageGlobal()
+barbaHandler()
+
+/*
+
+OLD ROUTING METHOD
 
 // Page specific
 if (window.location.pathname === '/') {
@@ -21,3 +21,4 @@ if (window.location.pathname === '/') {
 } else if (window.location.pathname.startsWith('/work/')) {
   pageProjectTemplate()
 }
+*/

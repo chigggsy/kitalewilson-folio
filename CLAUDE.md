@@ -35,9 +35,11 @@ Removes the `/dist` folder.
 ## Architecture
 
 ### Entry Point and Routing
-- **src/main.js**: Main entry point that handles client-side routing via pathname matching
-- Routes are matched using `window.location.pathname` and call corresponding page functions
-- Routes: `/` (home), `/stills`, `/about`, `/contact`, `/work/*` (project template)
+- **src/main.js**: Main entry point that initializes the Barba.js handler
+- **src/features/barbaHandler.js**: Configures Barba.js with view-based routing using namespaces
+- Routes are matched by Barba namespace attributes in Webflow HTML (`data-barba-namespace`)
+- Views/Routes: `home`, `about`, `stills`, `contact`, `project` (project template)
+- Each view calls its corresponding page function in the `beforeEnter()` hook
 
 ### Page Module Pattern
 Each page follows a consistent pattern:
@@ -47,7 +49,6 @@ Each page follows a consistent pattern:
 - Return cleanup functions to properly remove event listeners and revert GSAP effects
 
 **Pages directory** (`src/pages/`):
-- `pageGlobal.js`: Runs on all pages, initializes Barba.js transitions
 - `pageHome.js`: Preloader animation, bio reveal, project navigation setup
 - `pageAbout.js`: About page animations with SplitText effects
 - `pageStills.js`: Stills gallery page
@@ -56,12 +57,12 @@ Each page follows a consistent pattern:
 
 ### Features Module Pattern
 Reusable features live in `src/features/`:
-- `transitions.js`: Barba.js configuration with opacity-based page transitions
+- `barbaHandler.js`: Barba.js initialization with view-based routing (transitions currently disabled)
 - `projectNav.js`: Project list hover effects and mouse-tracking preview
 - `stillsHover.js`: Hover interactions for stills gallery
 - `updateBristolDateTime.js`: Dynamic time display
 
-Features are imported and called from page modules where needed.
+Features are imported and called from page modules where needed. The `barbaHandler` is called once from `main.js`.
 
 ### Animation Patterns
 
@@ -107,4 +108,5 @@ The Vite build is configured to output UMD format compatible with Webflow:
 - GSAP premium plugins (SplitText, GSDevTools) are used - ensure these are properly licensed
 - The build creates a UMD module, not ES modules, for Webflow compatibility
 - All page modules must handle their own cleanup to prevent memory leaks
-- Barba.js handles page transitions globally via `pageGlobal.js`
+- Barba.js handles routing and view initialization via `barbaHandler.js`
+- Webflow HTML must include `data-barba="wrapper"` and `data-barba="container"` attributes, plus `data-barba-namespace` on the container to match view names in `barbaHandler.js`

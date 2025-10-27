@@ -9,8 +9,12 @@ const pageAbout = () => {
       isTablet: '(max-width: 991px)',
     },
     (context) => {
-      let { isDesktop } = context.conditions
-      console.log(isDesktop) // Remove this
+      let { isDesktop, isTablet } = context.conditions
+      if (isDesktop) {
+        gsap.set('.page-wrapper', { height: '100vh' })
+      } else if (isTablet) {
+        gsap.set('.page-wrapper', { clearProps: 'height' })
+      }
       const st_headings = SplitText.create('.about-block h2', {
         type: 'words',
         mask: 'words',
@@ -54,7 +58,6 @@ const pageAbout = () => {
         '.about-image img',
         {
           duration: 1.8,
-          // clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
           y: 0,
           opacity: 0,
           ease: 'power3.inOut',

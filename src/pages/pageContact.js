@@ -17,6 +17,7 @@ const pageContact = () => {
     (context) => {
       let { isDesktop } = context.conditions
       console.log(isDesktop)
+      gsap.set('.page-wrapper', { clearProps: 'all' })
 
       const st_paragraphs = SplitText.create('.contact-info p', {
         type: 'lines',

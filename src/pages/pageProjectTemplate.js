@@ -66,6 +66,7 @@ const pageProjectTemplate = () => {
     (context) => {
       let { isDesktop, isTablet } = context.conditions
       console.log(isDesktop, isTablet) // REMOVE THIS
+      gsap.set('.page-wrapper', { clearProps: 'all' })
     }
   )
 }
