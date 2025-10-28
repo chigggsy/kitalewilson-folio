@@ -16,6 +16,7 @@ const pageHome = () => {
     (context) => {
       let { isDesktop, isTablet } = context.conditions
       gsap.set('.page-wrapper', { clearProps: 'all' })
+      gsap.set('.transition-wrapper', { opacity: 0 })
 
       let cleanupProjectNav = null
 
