@@ -152,9 +152,15 @@ const pageHome = () => {
         },
         2.5
       )
-        .from(
+        .fromTo(
           '.nav-item-list a',
-          { duration: 0.3, opacity: 0, stagger: { each: 0.01 } },
+          { opacity: 0 },
+          {
+            duration: 0.3,
+            opacity: 1,
+            stagger: { each: 0.01 },
+            clearProps: 'opacity',
+          },
           3.5
         )
         .from(
