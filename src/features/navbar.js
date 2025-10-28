@@ -1,56 +1,51 @@
-import gsap from 'gsap'
-
 const navbar = () => {
-  console.log('navbar loaded')
-
   const navItemWrapperList = document.querySelectorAll('.nav-item-wrapper')
 
+  function updateActiveNav() {
+    const currentPath = window.location.pathname
+
+    // Remove active state from all underlines
+    document.querySelectorAll('.nav-underline').forEach((underline) => {
+      underline.classList.remove('is-active')
+    })
+
+    let activeLink
+
+    // Special handling for home and work project pages
+    if (currentPath === '/' || currentPath.startsWith('/work/')) {
+      // Activate the home/work link - be specific to avoid selecting the logo
+      activeLink = document.querySelector('.nav-item-wrapper[href="/"]')
+    } else {
+      // For other pages, try to find exact match within nav items
+      activeLink = document.querySelector(
+        `.nav-item-wrapper[href="${currentPath}"]`
+      )
+    }
+
+    console.log('Current path:', currentPath)
+    console.log('Active link:', activeLink)
+
+    if (activeLink) {
+      const underline = activeLink.querySelector('.nav-underline')
+      console.log('Underline element:', underline)
+      if (underline) {
+        underline.classList.add('is-active')
+      }
+    }
+  }
+
   navItemWrapperList.forEach((navItemWrapper) => {
-    const navItem = navItemWrapper.querySelector('.nav-item')
-    const navItemItalic = navItemWrapper.querySelector('.nav-item-italic')
-    const navUnderline = navItemWrapper.querySelector('.nav-underline')
-
-    navItem.classList.remove('is-active')
-    navItemItalic.classList.remove('is-active')
-    navUnderline.classList.remove('is-active')
-
-    function handleMouseEnter(e) {
-      const hoveredItemParent = e.currentTarget.parentElement
-      const hoveredItem = hoveredItemParent.querySelector('.nav-item')
-      const hoveredItemItalic =
-        hoveredItemParent.querySelector('.nav-item-italic')
-
-      const tl = gsap.timeline({
-        defaults: { duration: 0.6, ease: 'power3.out' },
-      })
-
-      tl.to(hoveredItem, { y: '-1rem' }, 0).to(
-        hoveredItemItalic,
-        { y: '-1.25rem' },
-        0
-      )
-    }
-
-    function handleMouseLeave(e) {
-      const hoveredItemParent = e.currentTarget.parentElement
-      const hoveredItem = hoveredItemParent.querySelector('.nav-item')
-      const hoveredItemItalic =
-        hoveredItemParent.querySelector('.nav-item-italic')
-
-      const tl = gsap.timeline({
-        defaults: { duration: 0.6, ease: 'power3.inOut' },
-      })
-
-      tl.to(hoveredItem, { y: '0rem' }, 0).to(
-        hoveredItemItalic,
-        { y: '0rem' },
-        0
-      )
-    }
-
-    navItem.addEventListener('mouseenter', handleMouseEnter)
-    navItem.addEventListener('mouseleave', handleMouseLeave)
+    navItemWrapper.addEventListener('mouseenter', () => {
+      const underline = navItemWrapper.querySelector('.nav-underline-wrapper')
+      underline.classList.add('is-hover')
+    })
+    navItemWrapper.addEventListener('mouseleave', () => {
+      const underline = navItemWrapper.querySelector('.nav-underline-wrapper')
+      underline.classList.remove('is-hover')
+    })
   })
+
+  updateActiveNav()
 }
 
 export default navbar

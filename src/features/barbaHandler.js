@@ -6,6 +6,9 @@ import pageContact from '../pages/pageContact'
 import pageHome from '../pages/pageHome'
 import pageProjectTemplate from '../pages/pageProjectTemplate'
 import pageStills from '../pages/pageStills'
+import navbar from './navbar'
+
+navbar()
 
 function barbaHandler() {
   barba.init({
@@ -40,30 +43,35 @@ function barbaHandler() {
         namespace: 'home',
         beforeEnter() {
           pageHome()
+          navbar()
         },
       },
       {
         namespace: 'about',
         beforeEnter() {
           pageAbout()
+          navbar()
         },
       },
       {
         namespace: 'stills',
         beforeEnter() {
           pageStills()
+          navbar()
         },
       },
       {
         namespace: 'contact',
         beforeEnter() {
           pageContact()
+          navbar()
         },
       },
       {
         namespace: 'project',
         beforeEnter() {
           pageProjectTemplate()
+          navbar()
         },
       },
     ],
