@@ -30,6 +30,17 @@ const navbar = () => {
     }
   }
 
+  function handleScroll() {
+    const nav = document.querySelector('.nav')
+    if (!nav) return
+
+    if (window.scrollY > 0) {
+      nav.classList.add('is-scrolled')
+    } else {
+      nav.classList.remove('is-scrolled')
+    }
+  }
+
   function handleNavClick(e) {
     e.preventDefault()
     const targetUrl = e.currentTarget.getAttribute('href')
@@ -84,6 +95,9 @@ const navbar = () => {
   if (logo) {
     logo.addEventListener('click', handleNavClick)
   }
+
+  // Add scroll handler
+  window.addEventListener('scroll', handleScroll)
 
   // Reset transition wrapper opacity on page load (fade in)
   if (transitionWrapper) {

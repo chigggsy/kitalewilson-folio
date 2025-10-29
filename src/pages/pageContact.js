@@ -14,9 +14,9 @@ const pageContact = () => {
       isDesktop: `(min-width: 992px)`,
       isTablet: `(max-width: 991px)`,
     },
-    (context) => {
-      let { isDesktop } = context.conditions
-      console.log(isDesktop)
+    (/* context*/) => {
+      /* let { isDesktop } = context.conditions
+      console.log(isDesktop) */
       gsap.set('.page-wrapper', { clearProps: 'all' })
 
       const st_paragraphs = SplitText.create('.contact-info p', {
