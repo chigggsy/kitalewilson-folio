@@ -1,6 +1,7 @@
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 
+import textLink from '../features/textLink'
 import updateBristolDateTime from '../features/updateBristolDateTime'
 
 const pageContact = () => {
@@ -74,6 +75,8 @@ const pageContact = () => {
       }
     }
   )
+
+  textLink()
 }
 
 export default pageContact

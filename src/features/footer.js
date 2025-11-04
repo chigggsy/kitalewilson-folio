@@ -38,7 +38,7 @@ const footer = () => {
       st_footerLinkItems.revert()
     },
   })
-  tl.from(st_footerBio.lines, {}, 0).from(st_footerLinkItems.words, {}, 0.2)
+  tl.from(st_footerBio.lines, {}, 0).from(st_footerLinkItems.words, {}, 0)
 }
 
 export default footer
