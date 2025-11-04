@@ -2,8 +2,6 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import Hls from 'hls.js'
 
-console.log(Hls)
-
 const pageProjectTemplate = () => {
   const mm = gsap.matchMedia()
   const nextProject = document.querySelector('.project-navigation.is-next')
@@ -88,21 +86,69 @@ const pageProjectTemplate = () => {
     (context) => {
       let { isDesktop, isTablet } = context.conditions
       console.log(isDesktop, isTablet) // REMOVE THIS
-      gsap.set('.page-wrapper', { clearProps: 'all' })
 
-      // Split text ----- continue here....
+      const st_projectDetailHeadingList = new SplitText(
+        '.project-details-list .project-detail .u-text-italic',
+        {
+          type: 'words',
+          mask: 'words',
+        }
+      )
+
+      const st_projectDetailValues = new SplitText(
+        '.project-details-list .project-detail .u-text-italic + *',
+        {
+          type: 'words',
+          mask: 'words',
+        }
+      )
+
+      gsap.set('.page-wrapper', { clearProps: 'all' })
 
       const tl_intro = gsap.timeline()
 
-      tl_intro.from(
-        '.project-video',
-        {
-          duration: 1.2,
-          clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
-          ease: 'circ.inOut',
-        },
-        0.4
-      )
+      tl_intro
+        .from(
+          '.project-video',
+          {
+            duration: 1.2,
+            clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+            ease: 'circ.inOut',
+          },
+          0.4
+        )
+        .from(
+          st_projectDetailHeadingList.words,
+          {
+            duration: 1.5,
+            y: '120%',
+            opacity: 0,
+            stagger: { each: 0.04 },
+            ease: 'circ.inOut',
+          },
+          0.4
+        )
+        .from(
+          st_projectDetailValues.words,
+          {
+            duration: 1.5,
+            y: '120%',
+            opacity: 0,
+            stagger: { each: 0.04 },
+            ease: 'circ.inOut',
+          },
+          0.5
+        )
+        .from(
+          '.project-gallery-image',
+          {
+            duration: 1,
+            opacity: 0,
+            stagger: { each: 0.06 },
+            ease: 'power3.inOut',
+          },
+          0.8
+        )
     }
   )
 

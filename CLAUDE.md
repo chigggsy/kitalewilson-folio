@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a portfolio website for Kitale Wilson built with Vite, vanilla JavaScript, and Webflow integration. The site features custom page transitions using Barba.js and animations using GSAP with premium plugins (SplitText, GSDevTools).
+This is a portfolio website for Kitale Wilson built with Vite, vanilla JavaScript, and Webflow integration. The site features custom page transitions and animations using GSAP with premium plugins (SplitText, GSDevTools).
 
 ## Development Commands
 
@@ -34,12 +34,10 @@ Removes the `/dist` folder.
 
 ## Architecture
 
-### Entry Point and Routing
-- **src/main.js**: Main entry point that initializes the Barba.js handler
-- **src/features/barbaHandler.js**: Configures Barba.js with view-based routing using namespaces
-- Routes are matched by Barba namespace attributes in Webflow HTML (`data-barba-namespace`)
-- Views/Routes: `home`, `about`, `stills`, `contact`, `project` (project template)
-- Each view calls its corresponding page function in the `beforeEnter()` hook
+### Entry Point
+- **src/main.js**: Main entry point that initializes page-specific functionality and global features
+- Page routing is handled by Webflow's native navigation
+- Each page has its own module in `src/pages/` that gets initialized based on the current page
 
 ### Page Module Pattern
 Each page follows a consistent pattern:
@@ -49,6 +47,7 @@ Each page follows a consistent pattern:
 - Return cleanup functions to properly remove event listeners and revert GSAP effects
 
 **Pages directory** (`src/pages/`):
+- `pageGlobal.js`: Global features that run on all pages (navbar)
 - `pageHome.js`: Preloader animation, bio reveal, project navigation setup
 - `pageAbout.js`: About page animations with SplitText effects
 - `pageStills.js`: Stills gallery page
@@ -57,12 +56,12 @@ Each page follows a consistent pattern:
 
 ### Features Module Pattern
 Reusable features live in `src/features/`:
-- `barbaHandler.js`: Barba.js initialization with view-based routing (transitions currently disabled)
+- `navbar.js`: Navigation functionality
 - `projectNav.js`: Project list hover effects and mouse-tracking preview
 - `stillsHover.js`: Hover interactions for stills gallery
 - `updateBristolDateTime.js`: Dynamic time display
 
-Features are imported and called from page modules where needed. The `barbaHandler` is called once from `main.js`.
+Features are imported and called from page modules where needed. Global features are initialized from `pageGlobal.js`.
 
 ### Animation Patterns
 
@@ -98,8 +97,8 @@ The Vite build is configured to output UMD format compatible with Webflow:
 
 ## Key Dependencies
 
-- **@barba/core**: Page transitions
 - **gsap**: Animation library with premium plugins (SplitText, GSDevTools)
+- **hls.js**: HLS video streaming support
 - **jquery**: Available as external dependency from Webflow
 - **vite**: Build tool and dev server
 
@@ -107,6 +106,4 @@ The Vite build is configured to output UMD format compatible with Webflow:
 
 - GSAP premium plugins (SplitText, GSDevTools) are used - ensure these are properly licensed
 - The build creates a UMD module, not ES modules, for Webflow compatibility
-- All page modules must handle their own cleanup to prevent memory leaks
-- Barba.js handles routing and view initialization via `barbaHandler.js`
-- Webflow HTML must include `data-barba="wrapper"` and `data-barba="container"` attributes, plus `data-barba-namespace` on the container to match view names in `barbaHandler.js`
+- Page-specific cleanup functions handle removal of event listeners and GSAP effects to prevent memory leaks
