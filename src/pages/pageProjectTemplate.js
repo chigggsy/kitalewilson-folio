@@ -7,36 +7,9 @@ const pageProjectTemplate = () => {
   const nextProject = document.querySelector('.project-navigation.is-next')
   const prevProject = document.querySelector('.project-navigation.is-previous')
 
-  function handleMouseLeave(e) {
-    const project = e.currentTarget
-    const projectName = project.querySelector('h2')
-    const projectNameItalic = project.querySelector('.project-name-italic')
-    const st_projectName = new SplitText(projectName, {
-      type: 'words',
-    })
-    const st_projectNameItalic = new SplitText(projectNameItalic, {
-      type: 'words',
-    })
-
-    const tl = gsap.timeline({
-      defaults: { duration: 0.6, ease: 'power3.out', stagger: 0.02 },
-    })
-    tl.to(st_projectName.words, { y: 22 }, 0).to(
-      st_projectNameItalic.words,
-      {
-        y: 22,
-      },
-      0
-    )
-  }
-
-  nextProject.addEventListener('mouseenter', handleMouseEnter)
-  nextProject.addEventListener('mouseleave', handleMouseLeave)
-  prevProject.addEventListener('mouseenter', handleMouseEnter)
-  prevProject.addEventListener('mouseleave', handleMouseLeave)
-
   function handleMouseEnter(e) {
     const project = e.currentTarget
+    const projectNavImage = project.querySelector('.project-navigation-image')
     const projectName = project.querySelector('h2')
     const projectNameItalic = project.querySelector('.project-name-italic')
     const st_projectName = new SplitText(projectName, {
@@ -46,16 +19,55 @@ const pageProjectTemplate = () => {
       type: 'words',
     })
 
-    const tl_projectNav = gsap.timeline({
-      defaults: { duration: 0.6, ease: 'power3.out', stagger: 0.02 },
+    const tl_projectNav = gsap.timeline()
+    tl_projectNav
+      .to(st_projectName.words, { y: -22 }, 0)
+      .to(
+        st_projectNameItalic.words,
+        {
+          duration: 0.6,
+          y: -22,
+          stagger: 0.02,
+          ease: 'power3.out',
+        },
+        0
+      )
+      .to(
+        projectNavImage,
+        {
+          duration: 0.3,
+          opacity: 0,
+          ease: 'power3.inOut',
+        },
+        0
+      )
+  }
+
+  function handleMouseLeave(e) {
+    const project = e.currentTarget
+    const projectNavImage = project.querySelector('.project-navigation-image')
+    const projectName = project.querySelector('h2')
+    const projectNameItalic = project.querySelector('.project-name-italic')
+    const st_projectName = new SplitText(projectName, {
+      type: 'words',
     })
-    tl_projectNav.to(st_projectName.words, { y: -22 }, 0).to(
-      st_projectNameItalic.words,
-      {
-        y: -22,
-      },
-      0
-    )
+    const st_projectNameItalic = new SplitText(projectNameItalic, {
+      type: 'words',
+    })
+
+    const tl = gsap.timeline()
+    tl.to(st_projectName.words, { y: 22 }, 0)
+      .to(
+        st_projectNameItalic.words,
+        {
+          duration: 0.6,
+          y: 22,
+          stagger: 0.02,
+          ease: 'power3.out',
+        },
+        0
+      )
+      .to(projectNavImage, { duration: 0.3, opacity: 1, ease: 'power3.out' }, 0)
   }
 
   function hlsPlayerInit() {
@@ -77,6 +89,11 @@ const pageProjectTemplate = () => {
       video.src = videoSrc
     }
   }
+
+  nextProject.addEventListener('mouseenter', handleMouseEnter)
+  nextProject.addEventListener('mouseleave', handleMouseLeave)
+  prevProject.addEventListener('mouseenter', handleMouseEnter)
+  prevProject.addEventListener('mouseleave', handleMouseLeave)
 
   mm.add(
     {
