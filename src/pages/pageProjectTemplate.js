@@ -83,7 +83,7 @@ const pageProjectTemplate = () => {
       hls.attachMedia(video)
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        console.log('Video is ready to play')
+        // console.log('Video is ready to play')
       })
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = videoSrc
