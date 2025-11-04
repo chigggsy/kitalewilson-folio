@@ -163,6 +163,10 @@ const pageProjectTemplate = () => {
             opacity: 0,
             stagger: { each: 0.06 },
             ease: 'power3.inOut',
+            onComplete: () => {
+              st_projectDetailHeadingList.revert()
+              st_projectDetailValues.revert()
+            },
           },
           0.8
         )
