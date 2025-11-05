@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
 
 const projectNav = (context) => {
   // Map project URLs to video IDs
@@ -13,6 +14,76 @@ const projectNav = (context) => {
     '/work/present-tense': 'preview-presenttense',
     '/work/exposed': 'preview-exposed',
     '/work/signia': 'preview-signia',
+  }
+
+  const handleProjectClick = () => {
+    const projectList = document.querySelectorAll('.project')
+    const cleanups = []
+
+    context.add('handleClick', (e) => {
+      e.preventDefault()
+
+      const previewVideos = document.querySelectorAll('.preview-video')
+      const st_bio = SplitText.create('.bio', { type: 'words', mask: 'words' })
+      // Exit animation timeline
+      const tl = gsap.timeline()
+
+      // Animate preview video clipPath from top to bottom (disappear)
+      tl.to(
+        previewVideos,
+        {
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          duration: 1.2,
+          ease: 'circ.inOut',
+        },
+        0
+      )
+        .to(
+          // Preview Border
+          '.preview-border.is-left, .preview-border.is-right',
+          {
+            duration: 2,
+            height: 0,
+            y: '-50vh',
+            stagger: { each: 0.3 },
+            ease: 'circ.inOut',
+          },
+          0.35
+        )
+        .to(
+          // Preview Border
+          '.preview-border.is-bottom, .preview-border.is-top',
+          {
+            duration: 2,
+            width: 0,
+            x: '50vw',
+            stagger: { each: 0.3 },
+          },
+          0.35
+        )
+        .to(
+          st_bio.words,
+          {
+            duration: 1.5,
+            y: '-130%',
+            stagger: { each: 0.01 },
+            ease: 'power3.out',
+          },
+          0.5
+        )
+    })
+
+    projectList.forEach((project) => {
+      project.addEventListener('click', context.handleClick)
+
+      cleanups.push(() => {
+        project.removeEventListener('click', context.handleClick)
+      })
+    })
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup())
+    }
   }
 
   const navHover = () => {
@@ -121,10 +192,12 @@ const projectNav = (context) => {
     }
   }
 
+  const cleanupProjectClick = handleProjectClick()
   const cleanupNavHover = navHover()
   const cleanupTranslate = translateProjectPreview()
 
   return () => {
+    cleanupProjectClick()
     cleanupNavHover()
     cleanupTranslate()
   }
