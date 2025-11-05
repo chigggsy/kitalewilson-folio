@@ -73,6 +73,8 @@ const projectNav = (context) => {
         )
     })
 
+    //comment for git lol
+
     projectList.forEach((project) => {
       project.addEventListener('click', context.handleClick)
 
