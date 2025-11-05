@@ -37,18 +37,22 @@ const projectNav = (context) => {
       // Hide all videos first
       allVideos.forEach((video) => {
         video.classList.add('is-hidden')
+        // Re-add the special class for The Well Within image
+        if (video.id === 'preview-tww') {
+          video.classList.add('is-hidden-tww')
+        }
       })
 
-      // Show the corresponding video
+      // Show the corresponding video/image
       if (videoId) {
-        const targetVideo = document.getElementById(videoId)
-        if (targetVideo) {
-          targetVideo.classList.remove('is-hidden')
+        const targetMedia = document.getElementById(videoId)
+        if (targetMedia) {
+          targetMedia.classList.remove('is-hidden', 'is-hidden-tww')
 
-          // Restart video only if it's a different video
-          if (isDifferentVideo) {
-            targetVideo.currentTime = 0
-            targetVideo.play()
+          // Restart video only if it's a different video and it's actually a video element
+          if (isDifferentVideo && targetMedia.tagName === 'VIDEO') {
+            targetMedia.currentTime = 0
+            targetMedia.play()
           }
 
           // Update current video tracking
