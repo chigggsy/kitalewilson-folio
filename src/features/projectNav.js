@@ -23,8 +23,22 @@ const projectNav = (context) => {
     context.add('handleClick', (e) => {
       e.preventDefault()
 
+      const clickedProject = e.currentTarget
+      const clickedIndex = Array.from(projectList).indexOf(clickedProject)
       const previewVideos = document.querySelectorAll('.preview-video')
       const st_bio = SplitText.create('.bio', { type: 'words', mask: 'words' })
+
+      // Calculate distance of each project from the clicked one
+      const projectsWithDistance = Array.from(projectList).map(
+        (project, index) => ({
+          element: project,
+          distance: Math.abs(index - clickedIndex),
+        })
+      )
+
+      // Sort by distance (farthest first)
+      projectsWithDistance.sort((a, b) => b.distance - a.distance)
+
       // Exit animation timeline
       const tl = gsap.timeline()
 
@@ -71,6 +85,21 @@ const projectNav = (context) => {
           },
           0.5
         )
+
+      // Fade out other projects (staggered from farthest to closest)
+      projectsWithDistance.forEach((item, index) => {
+        if (item.distance > 0) {
+          tl.to(
+            item.element,
+            {
+              opacity: 0,
+              duration: 1,
+              ease: 'power3.inOut',
+            },
+            0.5 + index * 0.08
+          )
+        }
+      })
     })
 
     //comment for git lol
