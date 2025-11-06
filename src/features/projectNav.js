@@ -23,10 +23,19 @@ const projectNav = (context) => {
     context.add('handleClick', (e) => {
       e.preventDefault()
 
+      // Remove all mouse event listeners to prevent interference
+      projectList.forEach((project) => {
+        project.removeEventListener('mouseenter', context.handleMouseEnter)
+        project.removeEventListener('mouseleave', context.handleMouseLeave)
+      })
+
       const clickedProject = e.currentTarget
       const clickedIndex = Array.from(projectList).indexOf(clickedProject)
+      const targetUrl = clickedProject.getAttribute('href')
       const previewVideos = document.querySelectorAll('.preview-video')
       const st_bio = SplitText.create('.bio', { type: 'words', mask: 'words' })
+      const clickedProjectProperties =
+        clickedProject.querySelectorAll('.project-property')
 
       // Calculate distance of each project from the clicked one
       const projectsWithDistance = Array.from(projectList).map(
@@ -41,6 +50,9 @@ const projectNav = (context) => {
 
       // Exit animation timeline
       const tl = gsap.timeline()
+
+      // Prevent text wrapping on project properties during animation
+      gsap.set('.project-property', { whiteSpace: 'nowrap' })
 
       // Animate preview video clipPath from top to bottom (disappear)
       tl.to(
@@ -86,6 +98,47 @@ const projectNav = (context) => {
           0.5
         )
 
+      // Fade out clicked project properties (staggered)
+      tl.to(
+        clickedProjectProperties,
+        {
+          duration: 1,
+          opacity: 0,
+          ease: 'power3.inOut',
+          stagger: {
+            each: 0.1,
+            from: 'end',
+          },
+        },
+        0
+      )
+      // Move all projects upward (staggered from clicked project outward)
+      tl.to(
+        projectList,
+        {
+          y: -60,
+          duration: 2.5,
+          ease: 'circ.inOut',
+          force3D: false,
+          stagger: {
+            each: 0.08,
+            from: clickedIndex,
+          },
+        },
+        0.3
+      ).to(
+        clickedProject,
+        {
+          duration: 0.4,
+          opacity: 0,
+          ease: 'circ.inOut',
+          onComplete: () => {
+            window.location.href = targetUrl
+          },
+        },
+        1.4
+      )
+
       // Fade out other projects (staggered from farthest to closest)
       projectsWithDistance.forEach((item, index) => {
         if (item.distance > 0) {
@@ -96,13 +149,11 @@ const projectNav = (context) => {
               duration: 1,
               ease: 'power3.inOut',
             },
-            0.5 + index * 0.08
+            0.3 + index * 0.08
           )
         }
       })
     })
-
-    //comment for git lol
 
     projectList.forEach((project) => {
       project.addEventListener('click', context.handleClick)
