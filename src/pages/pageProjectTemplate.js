@@ -2,6 +2,8 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import Hls from 'hls.js'
 
+import videoPlayer from '../features/videoPlayer'
+
 const pageProjectTemplate = () => {
   const mm = gsap.matchMedia()
   const nextProject = document.querySelector('.project-navigation.is-next')
@@ -89,21 +91,37 @@ const pageProjectTemplate = () => {
   function hlsPlayerInit() {
     const video = document.querySelector('.project-video')
 
-    if (!video) return
+    if (!video) return null
 
     const videoSrc = video.getAttribute('data-hls-src')
+    let hls = null
 
     if (Hls.isSupported()) {
-      const hls = new Hls()
+      hls = new Hls()
       hls.loadSource(videoSrc)
       hls.attachMedia(video)
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        // console.log('Video is ready to play')
+        // Video is ready, initialize custom controls
+        const cleanupVideoPlayer = videoPlayer(video)
+
+        // Store cleanup function for later use
+        video.dataset.videoPlayerCleanup = true
+        video._videoPlayerCleanup = cleanupVideoPlayer
       })
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = videoSrc
+      video.addEventListener('loadedmetadata', () => {
+        // Video is ready, initialize custom controls
+        const cleanupVideoPlayer = videoPlayer(video)
+
+        // Store cleanup function for later use
+        video.dataset.videoPlayerCleanup = true
+        video._videoPlayerCleanup = cleanupVideoPlayer
+      })
     }
+
+    return hls
   }
 
   nextProject.addEventListener('mouseenter', handleMouseEnter)
@@ -191,7 +209,33 @@ const pageProjectTemplate = () => {
     }
   )
 
-  hlsPlayerInit()
+  const hlsInstance = hlsPlayerInit()
+
+  // Cleanup function
+  return () => {
+    const video = document.querySelector('.project-video')
+
+    // Clean up video player controls
+    if (video && video._videoPlayerCleanup) {
+      video._videoPlayerCleanup()
+    }
+
+    // Clean up HLS instance
+    if (hlsInstance) {
+      hlsInstance.destroy()
+    }
+
+    // Clean up event listeners
+    nextProject.removeEventListener('mouseenter', handleMouseEnter)
+    nextProject.removeEventListener('mouseleave', handleMouseLeave)
+    nextProject.removeEventListener('click', changeProject)
+    prevProject.removeEventListener('click', changeProject)
+    prevProject.removeEventListener('mouseenter', handleMouseEnter)
+    prevProject.removeEventListener('mouseleave', handleMouseLeave)
+
+    // Clean up matchMedia
+    mm.revert()
+  }
 }
 
 export default pageProjectTemplate

@@ -6,6 +6,7 @@ import pageProjectTemplate from './pages/pageProjectTemplate'
 import pageStills from './pages/pageStills'
 
 import './styles/style.css'
+import './styles/videoPlayer.css'
 
 // Global
 pageGlobal()
