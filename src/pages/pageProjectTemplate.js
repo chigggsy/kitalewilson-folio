@@ -7,6 +7,22 @@ const pageProjectTemplate = () => {
   const nextProject = document.querySelector('.project-navigation.is-next')
   const prevProject = document.querySelector('.project-navigation.is-previous')
 
+  function changeProject(e) {
+    e.preventDefault()
+    const project = e.currentTarget
+    const targetUrl = project.getAttribute('href')
+    const transitionWrapper = document.querySelector('.transition-wrapper')
+
+    gsap.to(transitionWrapper, {
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        window.location.href = targetUrl
+      },
+    })
+  }
+
   function handleMouseEnter(e) {
     const project = e.currentTarget
     const projectNavImage = project.querySelector('.project-navigation-image')
@@ -92,6 +108,8 @@ const pageProjectTemplate = () => {
 
   nextProject.addEventListener('mouseenter', handleMouseEnter)
   nextProject.addEventListener('mouseleave', handleMouseLeave)
+  nextProject.addEventListener('click', changeProject)
+  prevProject.addEventListener('click', changeProject)
   prevProject.addEventListener('mouseenter', handleMouseEnter)
   prevProject.addEventListener('mouseleave', handleMouseLeave)
 
