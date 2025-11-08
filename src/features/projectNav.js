@@ -173,12 +173,20 @@ const projectNav = (context) => {
     const allVideos = document.querySelectorAll('.preview-video')
     const cleanups = []
     let currentVideoId = null
+    // Track timelines for each project to prevent animation queueing
+    const projectTimelines = new Map()
 
     context.add('handleMouseEnter', (e) => {
       const project = e.currentTarget
       const projectName = project.querySelector('h2')
       const projectNameItalic = project.querySelector('.project-name-italic')
       const projectPropertyList = project.querySelectorAll('.project-property')
+
+      // Kill any existing timeline for this project
+      const existingTimeline = projectTimelines.get(project)
+      if (existingTimeline) {
+        existingTimeline.kill()
+      }
 
       // Get the project URL and corresponding video
       const projectUrl = project.getAttribute('href')
@@ -219,6 +227,9 @@ const projectNav = (context) => {
       tl.to(projectName, { y: -22 }, 0)
         .to(projectNameItalic, { y: -22 }, 0)
         .to(projectPropertyList, { top: 0, stagger: { amount: 0.15 } }, 0)
+
+      // Store the timeline for this project
+      projectTimelines.set(project, tl)
     })
 
     context.add('handleMouseLeave', (e) => {
@@ -226,6 +237,12 @@ const projectNav = (context) => {
       const projectName = project.querySelector('h2')
       const projectNameItalic = project.querySelector('.project-name-italic')
       const projectPropertyList = project.querySelectorAll('.project-property')
+
+      // Kill any existing timeline for this project
+      const existingTimeline = projectTimelines.get(project)
+      if (existingTimeline) {
+        existingTimeline.kill()
+      }
 
       // Don't hide videos on mouse leave - keep the last hovered video visible
 
@@ -239,6 +256,9 @@ const projectNav = (context) => {
           { top: -18, stagger: { amount: 0.15, from: 'end' } },
           0.35
         )
+
+      // Store the timeline for this project
+      projectTimelines.set(project, tl)
     })
 
     projectList.forEach((project) => {

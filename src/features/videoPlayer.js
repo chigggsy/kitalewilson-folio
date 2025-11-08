@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
 
 const videoPlayer = (videoElement) => {
   if (!videoElement) return () => {}
@@ -11,6 +12,7 @@ const videoPlayer = (videoElement) => {
 
   // Get UI elements
   const playPauseBtn = wrapper.querySelector('.vp-play-pause-btn')
+  const progressHitbox = wrapper.querySelector('.vp-progress-hitbox')
   const progressBar = wrapper.querySelector('.vp-progress-bar')
   const progressFilled = wrapper.querySelector('.vp-progress-filled')
   const progressHover = wrapper.querySelector('.vp-progress-hover')
@@ -21,9 +23,17 @@ const videoPlayer = (videoElement) => {
   const playerUI = wrapper.querySelector('.vp-player-ui')
   const pausedOverlay = wrapper.querySelector('.vp-paused-overlay')
   const centerIcon = wrapper.querySelector('.vp-center-icon')
+  const tooltipFullscreen = wrapper.querySelector(
+    '.vp-control-tooltip.is-fullscreen'
+  )
+  const tooltipMute = wrapper.querySelector('.vp-control-tooltip.is-mute')
 
   let hideControlsTimeout = null
   let isPlaying = false
+  let splitFullscreen = null
+  let splitMute = null
+  let fullscreenTooltipTimeline = null
+  let muteTooltipTimeline = null
 
   // Format time helper
   const formatTime = (seconds) => {
@@ -146,6 +156,59 @@ const videoPlayer = (videoElement) => {
     muteBtn.classList.toggle('is-muted', videoElement.muted)
   }
 
+  // Tooltip animations
+  const showTooltip = (splitInstance, timelineRef) => {
+    if (!splitInstance) return
+
+    // Kill any existing animation on this tooltip
+    if (timelineRef === 'fullscreen' && fullscreenTooltipTimeline) {
+      fullscreenTooltipTimeline.kill()
+    } else if (timelineRef === 'mute' && muteTooltipTimeline) {
+      muteTooltipTimeline.kill()
+    }
+
+    const tl = gsap.timeline()
+    tl.to(splitInstance.chars, {
+      top: '-1.1rem',
+      duration: 0.6,
+      stagger: 0.008,
+      ease: 'circ.out',
+    })
+
+    // Store the timeline reference
+    if (timelineRef === 'fullscreen') {
+      fullscreenTooltipTimeline = tl
+    } else if (timelineRef === 'mute') {
+      muteTooltipTimeline = tl
+    }
+  }
+
+  const hideTooltip = (splitInstance, timelineRef) => {
+    if (!splitInstance) return
+
+    // Kill any existing animation on this tooltip
+    if (timelineRef === 'fullscreen' && fullscreenTooltipTimeline) {
+      fullscreenTooltipTimeline.kill()
+    } else if (timelineRef === 'mute' && muteTooltipTimeline) {
+      muteTooltipTimeline.kill()
+    }
+
+    const tl = gsap.timeline()
+    tl.to(splitInstance.chars, { duration: 0.2, opacity: 0 }, 0)
+    tl.to(splitInstance.chars, {
+      duration: 0,
+      top: '1.1rem',
+      opacity: 1,
+    })
+
+    // Store the timeline reference
+    if (timelineRef === 'fullscreen') {
+      fullscreenTooltipTimeline = tl
+    } else if (timelineRef === 'mute') {
+      muteTooltipTimeline = tl
+    }
+  }
+
   // Event listeners
   const handleVideoClick = () => togglePlayPause()
   const handlePlayPauseClick = () => togglePlayPause()
@@ -153,7 +216,12 @@ const videoPlayer = (videoElement) => {
   const handleProgressMouseMove = (e) => updateProgressHover(e)
   const handleProgressMouseLeave = () => hideProgressHover()
   const handleFullscreenClick = () => toggleFullscreen()
+  const handleFullscreenHover = () => showTooltip(splitFullscreen, 'fullscreen')
+  const handleFullscreenHoverOut = () =>
+    hideTooltip(splitFullscreen, 'fullscreen')
   const handleMuteClick = () => toggleMute()
+  const handleMuteHover = () => showTooltip(splitMute, 'mute')
+  const handleMuteHoverOut = () => hideTooltip(splitMute, 'mute')
   const handleMouseMove = () => showControls()
   const handleMouseLeave = () => {
     if (isPlaying) {
@@ -172,13 +240,25 @@ const videoPlayer = (videoElement) => {
   videoElement.addEventListener('timeupdate', handleTimeUpdate)
   videoElement.addEventListener('loadedmetadata', handleLoadedMetadata)
   playPauseBtn?.addEventListener('click', handlePlayPauseClick)
-  progressBar?.addEventListener('click', handleProgressClick)
-  progressBar?.addEventListener('mousemove', handleProgressMouseMove)
-  progressBar?.addEventListener('mouseleave', handleProgressMouseLeave)
+  progressHitbox?.addEventListener('click', handleProgressClick)
+  progressHitbox?.addEventListener('mousemove', handleProgressMouseMove)
+  progressHitbox?.addEventListener('mouseleave', handleProgressMouseLeave)
   fullscreenBtn?.addEventListener('click', handleFullscreenClick)
+  fullscreenBtn?.addEventListener('mouseenter', handleFullscreenHover)
+  fullscreenBtn?.addEventListener('mouseleave', handleFullscreenHoverOut)
   muteBtn?.addEventListener('click', handleMuteClick)
+  muteBtn?.addEventListener('mouseenter', handleMuteHover)
+  muteBtn?.addEventListener('mouseleave', handleMuteHoverOut)
   wrapper.addEventListener('mousemove', handleMouseMove)
   wrapper.addEventListener('mouseleave', handleMouseLeave)
+
+  // Initialize SplitText for tooltips
+  if (tooltipFullscreen) {
+    splitFullscreen = new SplitText(tooltipFullscreen, { type: 'chars' })
+  }
+  if (tooltipMute) {
+    splitMute = new SplitText(tooltipMute, { type: 'chars' })
+  }
 
   // Initial state setup (video starts paused, so show all UI)
   gsap.set([playerUI, centerIcon, pausedOverlay], { opacity: 1 })
@@ -195,13 +275,21 @@ const videoPlayer = (videoElement) => {
     videoElement.removeEventListener('timeupdate', handleTimeUpdate)
     videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
     playPauseBtn?.removeEventListener('click', handlePlayPauseClick)
-    progressBar?.removeEventListener('click', handleProgressClick)
-    progressBar?.removeEventListener('mousemove', handleProgressMouseMove)
-    progressBar?.removeEventListener('mouseleave', handleProgressMouseLeave)
+    progressHitbox?.removeEventListener('click', handleProgressClick)
+    progressHitbox?.removeEventListener('mousemove', handleProgressMouseMove)
+    progressHitbox?.removeEventListener('mouseleave', handleProgressMouseLeave)
     fullscreenBtn?.removeEventListener('click', handleFullscreenClick)
+    fullscreenBtn?.removeEventListener('mouseenter', handleFullscreenHover)
+    fullscreenBtn?.removeEventListener('mouseleave', handleFullscreenHoverOut)
     muteBtn?.removeEventListener('click', handleMuteClick)
+    muteBtn?.removeEventListener('mouseenter', handleMuteHover)
+    muteBtn?.removeEventListener('mouseleave', handleMuteHoverOut)
     wrapper.removeEventListener('mousemove', handleMouseMove)
     wrapper.removeEventListener('mouseleave', handleMouseLeave)
+
+    // Revert SplitText
+    splitFullscreen?.revert()
+    splitMute?.revert()
   }
 }
 
