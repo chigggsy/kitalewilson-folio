@@ -162,7 +162,7 @@ const pageProjectTemplate = () => {
 
       tl_intro
         .from(
-          '.project-video',
+          '.video-player-wrapper',
           {
             duration: 1.2,
             clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',

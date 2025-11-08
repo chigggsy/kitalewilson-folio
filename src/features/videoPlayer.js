@@ -13,6 +13,7 @@ const videoPlayer = (videoElement) => {
   const playPauseBtn = wrapper.querySelector('.vp-play-pause-btn')
   const progressBar = wrapper.querySelector('.vp-progress-bar')
   const progressFilled = wrapper.querySelector('.vp-progress-filled')
+  const progressHover = wrapper.querySelector('.vp-progress-hover')
   const currentTimeEl = wrapper.querySelector('.vp-current-time')
   const totalTimeEl = wrapper.querySelector('.vp-total-time')
   const fullscreenBtn = wrapper.querySelector('.vp-fullscreen-btn')
@@ -42,7 +43,7 @@ const videoPlayer = (videoElement) => {
 
   // Show controls
   const showControls = () => {
-    gsap.to([playerUI, centerIcon], {
+    gsap.to([playerUI, centerIcon, pausedOverlay], {
       opacity: 1,
       duration: 0.3,
       ease: 'power2.out',
@@ -58,7 +59,7 @@ const videoPlayer = (videoElement) => {
   // Hide controls
   const hideControls = () => {
     if (!isPlaying) return // Don't hide if paused
-    gsap.to([playerUI, centerIcon], {
+    gsap.to([playerUI, centerIcon, pausedOverlay], {
       opacity: 0,
       duration: 0.3,
       ease: 'power2.out',
@@ -71,8 +72,7 @@ const videoPlayer = (videoElement) => {
       videoElement.play()
       isPlaying = true
 
-      // Hide overlay and show pause icon
-      gsap.to(pausedOverlay, { opacity: 0, duration: 0.3 })
+      // Show pause icon
       playPauseBtn.classList.remove('is-play')
       playPauseBtn.classList.add('is-pause')
 
@@ -82,8 +82,7 @@ const videoPlayer = (videoElement) => {
       videoElement.pause()
       isPlaying = false
 
-      // Show overlay and play icon
-      gsap.to(pausedOverlay, { opacity: 1, duration: 0.3 })
+      // Show play icon
       playPauseBtn.classList.remove('is-pause')
       playPauseBtn.classList.add('is-play')
 
@@ -91,6 +90,30 @@ const videoPlayer = (videoElement) => {
       showControls()
       clearTimeout(hideControlsTimeout)
     }
+  }
+
+  // Update progress hover indicator
+  const updateProgressHover = (e) => {
+    if (!progressHover) return
+    const rect = progressBar.getBoundingClientRect()
+    const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+    const percent = pos * 100
+    gsap.to(progressHover, {
+      width: `${percent}%`,
+      duration: 0.5,
+      ease: 'power3.out',
+    })
+  }
+
+  // Hide progress hover indicator
+  const hideProgressHover = () => {
+    if (!progressHover) return
+    const tl = gsap.timeline()
+    tl.to(progressHover, { duration: 0.5, opacity: '0%' }).to(
+      progressHover,
+      { duration: 0, clearProps: 'all' },
+      0.5
+    )
   }
 
   // Seek video
@@ -127,6 +150,8 @@ const videoPlayer = (videoElement) => {
   const handleVideoClick = () => togglePlayPause()
   const handlePlayPauseClick = () => togglePlayPause()
   const handleProgressClick = (e) => seek(e)
+  const handleProgressMouseMove = (e) => updateProgressHover(e)
+  const handleProgressMouseLeave = () => hideProgressHover()
   const handleFullscreenClick = () => toggleFullscreen()
   const handleMuteClick = () => toggleMute()
   const handleMouseMove = () => showControls()
@@ -148,14 +173,15 @@ const videoPlayer = (videoElement) => {
   videoElement.addEventListener('loadedmetadata', handleLoadedMetadata)
   playPauseBtn?.addEventListener('click', handlePlayPauseClick)
   progressBar?.addEventListener('click', handleProgressClick)
+  progressBar?.addEventListener('mousemove', handleProgressMouseMove)
+  progressBar?.addEventListener('mouseleave', handleProgressMouseLeave)
   fullscreenBtn?.addEventListener('click', handleFullscreenClick)
   muteBtn?.addEventListener('click', handleMuteClick)
   wrapper.addEventListener('mousemove', handleMouseMove)
   wrapper.addEventListener('mouseleave', handleMouseLeave)
 
-  // Initial state setup
-  gsap.set([playerUI, centerIcon], { opacity: 0 })
-  gsap.set(pausedOverlay, { opacity: 1 })
+  // Initial state setup (video starts paused, so show all UI)
+  gsap.set([playerUI, centerIcon, pausedOverlay], { opacity: 1 })
   playPauseBtn?.classList.add('is-play')
 
   // Disable native browser controls
@@ -170,6 +196,8 @@ const videoPlayer = (videoElement) => {
     videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
     playPauseBtn?.removeEventListener('click', handlePlayPauseClick)
     progressBar?.removeEventListener('click', handleProgressClick)
+    progressBar?.removeEventListener('mousemove', handleProgressMouseMove)
+    progressBar?.removeEventListener('mouseleave', handleProgressMouseLeave)
     fullscreenBtn?.removeEventListener('click', handleFullscreenClick)
     muteBtn?.removeEventListener('click', handleMuteClick)
     wrapper.removeEventListener('mousemove', handleMouseMove)
