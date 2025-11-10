@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 import Hls from 'hls.js'
 
+import initFullscreenImageViewer from '../features/fullscreenImageViewer'
 import videoPlayer from '../features/videoPlayer'
 
 const pageProjectTemplate = () => {
@@ -211,6 +212,9 @@ const pageProjectTemplate = () => {
 
   const hlsInstance = hlsPlayerInit()
 
+  // Initialize fullscreen image viewer
+  const cleanupImageViewer = initFullscreenImageViewer()
+
   // Cleanup function
   return () => {
     const video = document.querySelector('.project-video')
@@ -232,6 +236,11 @@ const pageProjectTemplate = () => {
     prevProject.removeEventListener('click', changeProject)
     prevProject.removeEventListener('mouseenter', handleMouseEnter)
     prevProject.removeEventListener('mouseleave', handleMouseLeave)
+
+    // Clean up fullscreen image viewer
+    if (cleanupImageViewer) {
+      cleanupImageViewer()
+    }
 
     // Clean up matchMedia
     mm.revert()

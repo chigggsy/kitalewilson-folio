@@ -27,6 +27,7 @@ const videoPlayer = (videoElement) => {
     '.vp-control-tooltip.is-fullscreen'
   )
   const tooltipMute = wrapper.querySelector('.vp-control-tooltip.is-mute')
+  const videoPlayerThumbnail = wrapper.querySelector('.vp-thumbnail')
 
   let hideControlsTimeout = null
   let isPlaying = false
@@ -34,6 +35,8 @@ const videoPlayer = (videoElement) => {
   let splitMute = null
   let fullscreenTooltipTimeline = null
   let muteTooltipTimeline = null
+  let isMuted = false
+  let isMuteHovering = false
 
   // Format time helper
   const formatTime = (seconds) => {
@@ -79,6 +82,9 @@ const videoPlayer = (videoElement) => {
   // Toggle play/pause
   const togglePlayPause = () => {
     if (videoElement.paused) {
+      if (videoPlayerThumbnail) {
+        videoPlayerThumbnail.remove()
+      }
       videoElement.play()
       isPlaying = true
 
@@ -152,8 +158,56 @@ const videoPlayer = (videoElement) => {
 
   // Toggle mute
   const toggleMute = () => {
+    const volumeLines = muteBtn.querySelectorAll('#volume-line')
+    const volumeBody = muteBtn.querySelector('#volume-body')
+
     videoElement.muted = !videoElement.muted
-    muteBtn.classList.toggle('is-muted', videoElement.muted)
+    isMuted = videoElement.muted
+
+    // Update tooltip text
+    if (tooltipMute) {
+      // Revert SplitText
+      splitMute.revert()
+
+      // Change text
+      tooltipMute.textContent = isMuted ? 'Unmute' : 'Mute'
+
+      // Re-split
+      splitMute = new SplitText(tooltipMute, { type: 'chars' })
+
+      // If user is still hovering, immediately set chars to visible position
+      if (isMuteHovering) {
+        gsap.set(splitMute.chars, { top: '-1.1rem' })
+      }
+    }
+
+    if (isMuted) {
+      // Muted State
+      gsap.to(volumeLines, {
+        opacity: 0,
+        duration: 0.4,
+        stagger: { each: 0.1, from: 'end' },
+        ease: 'power3.inOut',
+      })
+      gsap.to(volumeBody, {
+        x: 3,
+        duration: 0.4,
+        ease: 'power3.inOut',
+      })
+    } else {
+      // Unmuted State
+      gsap.to(volumeLines, {
+        opacity: 1,
+        duration: 0.4,
+        stagger: { each: 0.1, from: 'start' },
+        ease: 'power3.inOut',
+      })
+      gsap.to(volumeBody, {
+        x: 0,
+        duration: 0.4,
+        ease: 'power3.inOut',
+      })
+    }
   }
 
   // Tooltip animations
@@ -220,8 +274,14 @@ const videoPlayer = (videoElement) => {
   const handleFullscreenHoverOut = () =>
     hideTooltip(splitFullscreen, 'fullscreen')
   const handleMuteClick = () => toggleMute()
-  const handleMuteHover = () => showTooltip(splitMute, 'mute')
-  const handleMuteHoverOut = () => hideTooltip(splitMute, 'mute')
+  const handleMuteHover = () => {
+    isMuteHovering = true
+    showTooltip(splitMute, 'mute')
+  }
+  const handleMuteHoverOut = () => {
+    isMuteHovering = false
+    hideTooltip(splitMute, 'mute')
+  }
   const handleMouseMove = () => showControls()
   const handleMouseLeave = () => {
     if (isPlaying) {
