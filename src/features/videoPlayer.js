@@ -294,11 +294,23 @@ const videoPlayer = (videoElement) => {
     totalTimeEl.textContent = formatTime(videoElement.duration)
     currentTimeEl.textContent = formatTime(0)
   }
+  const handleVideoEnded = () => {
+    isPlaying = false
+
+    // Show play icon
+    playPauseBtn.classList.remove('is-pause')
+    playPauseBtn.classList.add('is-play')
+
+    // Keep controls visible
+    showControls()
+    clearTimeout(hideControlsTimeout)
+  }
 
   // Attach event listeners
   videoElement.addEventListener('click', handleVideoClick)
   videoElement.addEventListener('timeupdate', handleTimeUpdate)
   videoElement.addEventListener('loadedmetadata', handleLoadedMetadata)
+  videoElement.addEventListener('ended', handleVideoEnded)
   playPauseBtn?.addEventListener('click', handlePlayPauseClick)
   progressHitbox?.addEventListener('click', handleProgressClick)
   progressHitbox?.addEventListener('mousemove', handleProgressMouseMove)
@@ -334,6 +346,7 @@ const videoPlayer = (videoElement) => {
     videoElement.removeEventListener('click', handleVideoClick)
     videoElement.removeEventListener('timeupdate', handleTimeUpdate)
     videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata)
+    videoElement.removeEventListener('ended', handleVideoEnded)
     playPauseBtn?.removeEventListener('click', handlePlayPauseClick)
     progressHitbox?.removeEventListener('click', handleProgressClick)
     progressHitbox?.removeEventListener('mousemove', handleProgressMouseMove)
